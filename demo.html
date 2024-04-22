@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .focused-input {
+            background-color: yellow;
+        }
+    </style>
+      <script>
+        function send() {
+            alert("sent!");
+        }
+
+        function addrow() {
+            // Get the table element
+            const table = document.querySelector('table');
+
+            // Get the focused input element
+            const focusedInput = document.querySelector('input.focused-input');
+
+            // Check if there is a focused input
+            if (focusedInput) {
+                // Get the date value from the focused input's row
+                const focusedRow = focusedInput.parentNode.parentNode;
+                const dateInput = focusedRow.cells[0].querySelector('input');
+                const dateValue = dateInput.value;
+
+                // Get the row index of the focused row
+                const rowIndex = focusedRow.rowIndex;
+
+                // Create a new row
+                const newRow = table.insertRow(rowIndex + 1);
+
+                // Create new cells for the new row
+                const dateCell = newRow.insertCell(0);
+                const startCell = newRow.insertCell(1);
+                const endCell = newRow.insertCell(2);
+                const commentCell = newRow.insertCell(3);
+
+                // Create new input elements for the new cells
+                const newDateInput = document.createElement('input');
+                newDateInput.value = dateValue;
+                newDateInput.addEventListener('focus', focusInput);
+
+                const startInput = document.createElement('input');
+                startInput.addEventListener('focus', focusInput);
+
+                const endInput = document.createElement('input');
+                endInput.addEventListener('focus', focusInput);
+
+                const commentSpan = document.createElement('span');
+
+                const commentInput = document.createElement('input');
+                commentInput.addEventListener('focus', focusInput);
+
+                // Append the new input elements to their respective cells
+                dateCell.appendChild(newDateInput);
+                startCell.appendChild(startInput);
+                endCell.appendChild(endInput);
+                commentCell.appendChild(commentSpan);
+                commentSpan.appendChild(commentInput);
+
+                // Regenerate IDs for all input and span elements
+                regenerateAllIds(table);
+            }
+        }
+
+        function regenerateAllIds(table) {
+            const rows = table.rows;
+            let rowIndex = 0;
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.cells;
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    const input = cell.querySelector('input');
+                    if (input) {
+                        input.removeAttribute('id');
+                        input.id = `pt1:dataTable:${rowIndex}:${j === 0 ? 'clockInDate' : j === 1 ? 'clockInTime::content' : j === 2 ? 'clockOutTime::content' : 'remarkInput::content'}`;
+                    }
+                    const span = cell.querySelector('span');
+                    if (span) {
+                        span.removeAttribute('id');
+                        span.id = `pt1:dataTable:${rowIndex}:remarkInput`;
+                    }
+                }
+                rowIndex++;
+            }
+        }
+
+        function focusInput(event) {
+            // Remove the focused-input class from all inputs
+            const inputs = document.querySelectorAll('input.focused-input');
+            inputs.forEach(input => input.classList.remove('focused-input'));
+
+            // Add the focused-input class to the currently focused input
+            event.target.classList.add('focused-input');
+        }
+    </script>
+</head>
+<body>
+    <center>
+        <h3>HELLO WORLD</h3>
+        <button id="pt1:saveButton" onclick="send()">SEND</button>
+        <button id="pt1:addRowButton" onclick="addrow()">ADDROW</button>
+        <table>
+            <tr>
+                <td>DATE</td>
+                <td>START</td>
+                <td>END</td>
+                <td>COMMENT</td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="pt1:dataTable:0:clockInDate" value="01/04/2024" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <input id="pt1:dataTable:0:clockInTime::content"  onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <input id="pt1:dataTable:0:clockOutTime::content" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <span id="pt1:dataTable:0:remarkInput" />
+                    <input id="pt1:dataTable:0:remarkInput::content" onfocus="focusInput(event)">
+                </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="pt1:dataTable:1:clockInDate" value="02/04/2024" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <input id="pt1:dataTable:1:clockInTime::content" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <input id="pt1:dataTable:1:clockOutTime::content" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <span id="pt1:dataTable:1:remarkInput" />
+                    <input id="pt1:dataTable:1:remarkInput::content" onfocus="focusInput(event)">
+                </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="pt1:dataTable:2:clockInDate" value="03/04/2024" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <input id="pt1:dataTable:2:clockInTime::content" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <input id="pt1:dataTable:2:clockOutTime::content" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <span id="pt1:dataTable:2:remarkInput" />
+                    <input id="pt1:dataTable:2:remarkInput::content" onfocus="focusInput(event)">
+                </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="pt1:dataTable:3:clockInDate" value="04/04/2024" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <input id="pt1:dataTable:3:clockInTime::content" value="08:00" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <input id="pt1:dataTable:3:clockOutTime::content" value="18:00" onfocus="focusInput(event)">
+                </td>
+                <td>
+                    <span id="pt1:dataTable:3:remarkInput" />
+                    <input id="pt1:dataTable:3:remarkInput::content" onfocus="focusInput(event)">
+                </span>
+                </td>
+            </tr>
+        </table>
+    </center>
+</body>
+</html>

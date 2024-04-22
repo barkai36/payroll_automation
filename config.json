@@ -1,0 +1,16 @@
+{
+	"HEADLESS":false,
+	"DELAY":500,
+	"URL":"https://payroll.malam.com/Salprd1Root/faces/login.jspx",
+	"COMPANY":"5560",
+	"USER":"11111111",
+	"PASSWORD":"password",
+	"FIXED":false,
+	"START_HOUR":"09:00",
+	"END_HOUR":"18:00",
+	"COMMENT":"דיווח בדיעבד",
+	"AUTO_CLOSE":false,
+	"LOGIN":true,
+	"CSV_FILE":"./hours.csv",
+	"SAVE":true
+}
