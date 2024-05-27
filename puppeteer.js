@@ -146,6 +146,7 @@ async function main() {
         const start_hour_selector = 'input[id^="pt1:dataTable:'+date_row_num+':"][id*="clockInTime::content"]:not(.p_AFDisabled)'
         const start_hour = await page.waitForSelector(start_hour_selector);
         await page.focus(start_hour_selector);
+        await delay(2000) 
         await page.click(start_hour_selector);
         const start_hour_value = await (await start_hour.getProperty('value')).jsonValue();
         console.log("start_hour_value: "+start_hour_value);
