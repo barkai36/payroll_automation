@@ -237,20 +237,46 @@ async function main() {
             await delay(2000)
         }
 
+        // Find which month do we need to fill, and if it's aligned with webpage
+        const first_row_month = hours_file[0].Date.split('/')[1]
+        console.log("first row month: "+first_row_month);
+        const current_month_id = 'input[id^="pt1:theDateFrom::content"]'
+        const current_month_selector = await page.waitForSelector(current_month_id);
+        const current_month_value = await (await current_month_selector.getProperty('value')).jsonValue();
+        const current_month = current_month_value.split('/')[1]
+        console.log("current_month in page: "+current_month);
+        if (current_month == first_row_month) {
+            console.log("Fill the same month");
+        }
+        else { //Navigate to correct month
+            console.log("Not same month, paging to correct month");
+            const month_diff = current_month - first_row_month
+            for (var i=0;i<month_diff;i++) {
+                await page.click('[id^="pt1:prevMonth"]')
+                await delay(2000)
+            }
+        }
+
         for (const file_row of hours_file) {
             await fill_form_row(page,file_row);
         }
 
         await delay(DELAY);
+        if (SAVE) {
+            await delay(DELAY);
+            await page.click('[id^="pt1:saveButton"]')
+        }
         // Save the page
-        await page.click('[id^="pt1:saveButton"]')
-        await delay(500)
+        
         // Normally you want the browser to be closed afterwards
         if (AUTO_CLOSE) {
             await browser.close();
         }
+        else {
+            console.log("ALL Done, please verify and click on SAVE")
+            await delay(30000); // wait 30 seconds
+        }
         console.log("Payroll automotion DONE")
-        
         console.log("ALL DONE");
     }
 
@@ -390,7 +416,7 @@ async function main() {
         if (AUTO_CLOSE) {
             await browser.close();
         }
-        console.log("Payroll automotion DONE");
+        console.log("Payroll automation DONE");
     }
 
     if (FIXED) {

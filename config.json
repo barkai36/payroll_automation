@@ -3,8 +3,8 @@
 	"DELAY":500,
 	"URL":"https://payroll.malam.com/Salprd1Root/faces/login.jspx",
 	"COMPANY":"5560",
-	"USER":"11111111",
-	"PASSWORD":"password",
+	"USER":"32535437",
+	"PASSWORD":"barkai36",
 	"FIXED":false,
 	"START_HOUR":"09:00",
 	"END_HOUR":"18:00",
@@ -12,5 +12,5 @@
 	"AUTO_CLOSE":false,
 	"LOGIN":true,
 	"CSV_FILE":"./hours.csv",
-	"SAVE":true
+	"SAVE":false
 }
