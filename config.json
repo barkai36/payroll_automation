@@ -12,5 +12,5 @@
 	"AUTO_CLOSE":false,
 	"LOGIN":true,
 	"CSV_FILE":"./hours.csv",
-	"SAVE":true
+	"SAVE":false
 }
