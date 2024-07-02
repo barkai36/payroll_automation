@@ -175,6 +175,9 @@ async function main() {
         // Navigate the page to a URL
         await page.goto(URL)
 
+        // Set wide display
+        await page.setViewport({width: 1080, height: 1524});
+
         // Run login process
         if (LOGIN) {
             await delay(DELAY)
