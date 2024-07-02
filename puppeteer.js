@@ -24,7 +24,7 @@ const AUTO_CLOSE = config.AUTO_CLOSE
 //const LOGIN = false;
 const LOGIN = config.LOGIN
 var CSV_FILE = config.CSV_FILE
-var SAVE = true
+var SAVE = config.SAVE
 
 
 /* Delay the coderun in X milliseconds
