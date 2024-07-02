@@ -1,5 +1,5 @@
 # Payroll automation 
-1. Clone repoe
+1. Clone repo
 2. Install dependencies
 
    `npm install`
