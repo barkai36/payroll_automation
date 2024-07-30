@@ -25,6 +25,7 @@ const AUTO_CLOSE = config.AUTO_CLOSE
 const LOGIN = config.LOGIN
 var CSV_FILE = config.CSV_FILE
 var SAVE = config.SAVE
+const MONTH_GAP = config.MONTH_GAP
 
 
 /* Delay the coderun in X milliseconds
@@ -363,6 +364,7 @@ async function main() {
             await delay(2000)
         }
 
+
         // Fill a column in form
         // select - DOM selector for the column, should return array of input DOMs
         // fill_value - Text value to fill in the input
@@ -403,7 +405,15 @@ async function main() {
             }
         }
 
-        // TODO - Merge fixed function with CSV function.
+        //Switch to correct month 
+        if (MONTH_GAP > 0) {
+            for (var i=0;i<MONTH_GAP;i++) {
+                await page.click('[id^="pt1:prevMonth"]')
+                await delay(4000)
+            }
+        }
+        
+        // Fill form with all the text, row by row.
         async function fill_form_fixed(selector,from_text,to_text,comment) {
             // Loop through column 'START' inputs DOMs
             await page.waitForSelector(selector);
@@ -412,11 +422,39 @@ async function main() {
 
             for (const start_input of rows_array){
                 const row_num = start_input.remoteObject().description.split(":")[2]
-                await write_hours_line(page,row_num,from_text,to_text,comment)
+                if (row_num == 7) {
+                    console.log();
+                }
+
+                // Eligable row - (empty start_time) AND (code == 200_0 [נוכחות])
+                const start_input_dom = 'input[id^="pt1:dataTable:'+row_num+':clockInTime::content"]:not(.p_AFDisabled)'
+                const start_input_selector = await page.waitForSelector(start_input_dom);
+                const start_input_value = await (await start_input_selector.getProperty('value')).jsonValue();
+                const code_selector_dom = 'select[id^="pt1:dataTable:'+row_num+':workTypeSelect::content"]'
+                const code_selector = await page.waitForSelector(code_selector_dom);
+                const code_selector_value = await page.evaluate(select => {
+                    if (!select) {
+                      throw new Error('Select element not found');
+                    }
+                    return select.options[select.selectedIndex].value;
+                  }, code_selector);
+                  
+                if (start_input_value != ''){ // Skip row that have start_time filled
+                    console.log("Row "+row_num+" is not empty, skipping")
+                    console.log("Row "+row_num+" start hour:"+start_input_value)
+                }
+                else if(code_selector_value != "200_0") { // Skip row that have different code selected (like vacation)
+                    console.log("Row "+row_num+" is not empty, skipping")
+                    console.log("Row "+row_num+" code is:"+code_selector_value)
+                }
+                else {
+                    console.log("Filling row:"+row_num)
+                    await write_hours_line(page,row_num,from_text,to_text,comment) // Fill the row
+                }
             }
         }
 
-        const enabled_start_input = 'input[id^="pt1:dataTable:"][id*="clockInTime::content"]:not(.p_AFDisabled)'
+        const enabled_start_input = 'input[id^="pt1:dataTable:"][id*="clockInTime::content"]:not([disabled])'
         await fill_form_fixed(enabled_start_input,START_HOUR,END_HOUR,COMMENT)
  
         if (SAVE) {
