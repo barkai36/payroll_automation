@@ -12,5 +12,6 @@
 	"AUTO_CLOSE":false,
 	"LOGIN":true,
 	"CSV_FILE":"./hours.csv",
-	"SAVE":false
+	"SAVE":false,
+	"MONTH_GAP" : 0
 }
