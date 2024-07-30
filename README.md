@@ -12,14 +12,14 @@ For FIXED mode:
 - set FIXED=True
 
 6. Run code
- `node puppeteer.js`\
-\
-\
+ `node puppeteer.js`
+
+
 ## Parameters: 
 Edit 'config.json' for parameters.  \
-First ones to configure are: USERNAME,PASSWORD,FIXED,MONTH_GAP \ 
-\
-\
+First ones to configure are: USERNAME,PASSWORD,FIXED,MONTH_GAP  
+
+
 ## All Paramters:  
 HEADLESS -  Show automation browser \
 USER - put your payroll username \
