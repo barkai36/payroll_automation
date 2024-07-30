@@ -60,7 +60,7 @@ async function puppeteer_demo(){
 
 
     // Set screen size
-    await page.setViewport({width: 1080, height: 1024});
+    await page.setViewport({width: 2000, height: 2000});
 
     // Type into search box
     await page.type('.devsite-search-field', 'automate beyond recorder');
@@ -116,7 +116,7 @@ async function main() {
     async function write_hours_line(page,row_num,from_text,to_text,comment){
         await write_input(page,'input[id^="pt1:dataTable:',row_num,'"][id*="clockInTime::content"]:not(.p_AFDisabled)',from_text);
         await write_input(page,'input[id^="pt1:dataTable:',row_num,'"][id*="clockOutTime::content"]:not(.p_AFDisabled)',to_text);
-        await write_input(page,'input[id^="pt1:dataTable:',row_num,'"][id*="remarkInput"]:not(.p_AFDisabled)',COMMENT);
+        await write_input(page,'input[id^="pt1:dataTable:',row_num,'"][id*="remarkInput"]:not(.p_AFDisabled)',comment);
         return true;
     }
 
@@ -401,25 +401,35 @@ async function main() {
                     }
                 }
             }
-       }
+        }
 
-        // Loop through column 'START' inputs DOMs, fill START_HOUR (e.g. "09:00")
-       await fill_form_column('input[id^="pt1:dataTable:"][id*="clockInTime::content"]:not(.p_AFDisabled)',START_HOUR);
-       // Loop through column 'END' inputs DOMs, fill END_HOUR (e.g. "18:00")
-       await fill_form_column('input[id^="pt1:dataTable:"][id*="clockOutTime::content"]:not(.p_AFDisabled)',END_HOUR);
-       // Loop through column 'COMMENT' inputs DOMs, fill COMMENT (e.g. "mytext in here")
-       await fill_form_column('span[id^="pt1:dataTable:"][id*="remarkInput"]:not(.p_AFDisabled)',COMMENT,true,1000);
-       
-       if (SAVE) {
-        await delay(DELAY);
-        await page.click('[id^="pt1:saveButton"]')
-       }
+        // TODO - Merge fixed function with CSV function.
+        async function fill_form_fixed(selector,from_text,to_text,comment) {
+            // Loop through column 'START' inputs DOMs
+            await page.waitForSelector(selector);
+            const rows_array = await page.$$(selector);
+            //console.log(start_input_array);
+
+            for (const start_input of rows_array){
+                const row_num = start_input.remoteObject().description.split(":")[2]
+                await write_hours_line(page,row_num,from_text,to_text,comment)
+            }
+        }
+
+        const enabled_start_input = 'input[id^="pt1:dataTable:"][id*="clockInTime::content"]:not(.p_AFDisabled)'
+        await fill_form_fixed(enabled_start_input,START_HOUR,END_HOUR,COMMENT)
+ 
+        if (SAVE) {
+            await delay(DELAY);
+            await page.click('[id^="pt1:saveButton"]')
+        }
         await delay(500);
         // Normally you want the browser to be closed afterwards
         if (AUTO_CLOSE) {
             await browser.close();
         }
         console.log("Payroll automation DONE");
+        await delay(300000) //Wait 5 minutes
     }
 
     if (FIXED) {
